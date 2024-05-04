@@ -1,7 +1,7 @@
 package com.example.shop_mng_system.controller;
 
 import com.example.shop_mng_system.entity.Bill;
-import com.example.shop_mng_system.entity.Product;
+import com.example.shop_mng_system.exception.ResourceNotFoundException;
 import com.example.shop_mng_system.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,6 +17,20 @@ public class BillController {
 
     @Autowired
     private BillService billService;
+
+    /**
+     * Get the day balance for a specific user on a given date.
+     *
+     * @param userId The ID of the user for whom the day balance is calculated.
+     * @param date   The date for which the day balance is calculated.
+     * @return ResponseEntity containing the day balance as a Double.
+     */
+    @GetMapping("/users/{userId}/dayBalance")
+    public ResponseEntity<Double> getUserDayBalance(@PathVariable Long userId,
+                                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        Double dayBalance = billService.calculateDayBalanceForUser(userId, date);
+        return ResponseEntity.ok(dayBalance);
+    }
 
     /**
      * Get a bill by its ID.
@@ -48,24 +62,13 @@ public class BillController {
     /**
      * Add a new bill.
      *
-     * @param selectedProducts The list of products to be added to the bill.
-     * @return ResponseEntity containing the created bill.
+     * @param bill The bill object containing user, products, amount, and date.
+     * @return ResponseEntity containing the added bill or an error response.
      */
     @PostMapping("/addBill")
-    public ResponseEntity<Bill> addBill(@RequestBody List<Product> selectedProducts){
-        // Calculate total amount
-        Double totalAmount = 0.0;
-        for (Product product : selectedProducts) {
-            totalAmount += product.getPrice();
-        }
-
-        // Create a new Bill object
-        Bill bill = new Bill();
-        bill.setProducts(selectedProducts);
-        bill.setAmount(totalAmount);
-
+    public ResponseEntity<Bill> addBill(@RequestBody Bill bill) {
         try {
-            // Attempt to add the bill
+            // Delegate the creation logic to the service layer
             Bill createdBill = billService.addBill(bill);
             return ResponseEntity.ok(createdBill);
         } catch (Exception e) {
@@ -74,20 +77,21 @@ public class BillController {
     }
 
     /**
-     * Update an existing bill.
+     * Update an existing bill with the provided ID.
      *
      * @param id   The ID of the bill to be updated.
-     * @param bill The updated bill object.
-     * @return ResponseEntity containing the updated bill.
+     * @param bill The updated bill data including products, amount, date, and userId.
+     * @return ResponseEntity containing the updated bill or an error response.
      */
     @PutMapping("/updateBill/{id}")
     public ResponseEntity<Bill> updateBill(@PathVariable Long id, @RequestBody Bill bill){
         try {
-            // Attempt to update the bill
             Bill updatedBill = billService.updateBill(id, bill);
             return ResponseEntity.ok(updatedBill);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build(); // Return 404 if bill or user not found
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build(); // Return 400 if there's an error
+            return ResponseEntity.badRequest().build(); // Return 400 for other errors
         }
     }
 

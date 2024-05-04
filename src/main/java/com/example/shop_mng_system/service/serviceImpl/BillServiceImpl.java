@@ -1,7 +1,11 @@
 package com.example.shop_mng_system.service.serviceImpl;
 
 import com.example.shop_mng_system.entity.Bill;
+import com.example.shop_mng_system.entity.Product;
+import com.example.shop_mng_system.entity.User;
+import com.example.shop_mng_system.exception.ResourceNotFoundException;
 import com.example.shop_mng_system.repository.BillRepository;
+import com.example.shop_mng_system.repository.UserRepository;
 import com.example.shop_mng_system.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,9 @@ public class BillServiceImpl implements BillService {
     @Autowired
     private BillRepository billRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public Bill getBill(Long id) {
         return billRepository.findById(id).orElse(null);
@@ -27,18 +34,51 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public Bill addBill(Bill bill) {
+        // Retrieve the user entity from the database using the provided user ID
+        User user = userRepository.findById(bill.getUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + bill.getUser().getId()));
+
+        // Set the user for the bill
+        bill.setUser(user);
+
+        // Calculate total amount from the list of products
+        Double totalAmount = calculateTotalAmount(bill.getProducts());
+        bill.setAmount(totalAmount);
+
+        // Set the current date as the bill date
+        bill.setDate(LocalDate.now());
+
+        // Save the bill to the database
         return billRepository.save(bill);
+    }
+
+    // Helper method to calculate the total amount from a list of products
+    private Double calculateTotalAmount(List<Product> products) {
+        return products.stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
     }
 
     @Override
     public Bill updateBill(Long id, Bill bill) {
+        // Retrieve the existing bill from the database
         Bill existingBill = billRepository.findById(id).orElse(null);
-        if (existingBill != null) {
-            existingBill.setProducts(bill.getProducts());
-            existingBill.setAmount(bill.getAmount());
-            return billRepository.save(existingBill);
+        if (existingBill == null) {
+            throw new ResourceNotFoundException("Bill not found with id: " + id);
         }
-        return null;
+
+        // Update bill properties
+        existingBill.setProducts(bill.getProducts());
+        existingBill.setAmount(bill.getAmount());
+        existingBill.setDate(bill.getDate());
+
+        // Retrieve the user entity from the database using the provided user ID
+        User user = userRepository.findById(bill.getUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + bill.getUser().getId()));
+        existingBill.setUser(user);
+
+        // Attempt to update the bill
+        return billRepository.save(existingBill);
     }
 
     @Override

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -27,5 +28,6 @@ public class Bill {
     @JoinColumn(name = "bill_id")
     private List<Product> products;
     private Double amount;
+    private LocalDate date;
 
 }
