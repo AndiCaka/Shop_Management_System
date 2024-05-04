@@ -3,6 +3,8 @@ package com.example.shop_mng_system.controller;
 import com.example.shop_mng_system.entity.Product;
 import com.example.shop_mng_system.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,29 +15,75 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    /**
+     * Add a new product.
+     *
+     * @param product The product to be added.
+     * @return ResponseEntity containing the added product with status code 201 (Created).
+     */
     @PostMapping("/addProduct")
-    public Product addProduct(@RequestBody Product product){
-        productService.addProduct(product);
-        return product;
+    public ResponseEntity<Product> addProduct(@RequestBody Product product){
+        Product addedProduct = productService.addProduct(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addedProduct);
     }
 
+    /**
+     * Get a product by ID.
+     *
+     * @param productId The ID of the product to retrieve.
+     * @return ResponseEntity containing the retrieved product with status code 200 (OK), or 404 (Not Found) if product not found.
+     */
     @GetMapping("/getProduct/{productId}")
-    public Product getProduct(@PathVariable long productId){
-        return productService.getProduct(productId);
+    public ResponseEntity<Product> getProduct(@PathVariable long productId){
+        Product product = productService.getProduct(productId);
+        if (product != null) {
+            return ResponseEntity.ok(product);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
+    /**
+     * Get all products.
+     *
+     * @return ResponseEntity containing a list of all products with status code 200 (OK).
+     */
     @GetMapping("/getAllProducts")
-    public List<Product> products(){
-        return productService.getAllProducts();
+    public ResponseEntity<List<Product>> products(){
+        List<Product> products = productService.getAllProducts();
+        return ResponseEntity.ok(products);
     }
 
+    /**
+     * Update an existing product.
+     *
+     * @param productId The ID of the product to be updated.
+     * @param product   The updated product object.
+     * @return ResponseEntity containing the updated product with status code 200 (OK), or 404 (Not Found) if product not found.
+     */
     @PutMapping("/updateProduct/{productId}")
-    public Product updateProduct(@PathVariable Long productId,@RequestBody Product product){
-        return productService.updateProduct(productId, product);
+    public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody Product product){
+        Product updatedProduct = productService.updateProduct(productId, product);
+        if (updatedProduct != null) {
+            return ResponseEntity.ok(updatedProduct);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
+    /**
+     * Delete a product by ID.
+     *
+     * @param productId The ID of the product to be deleted.
+     * @return ResponseEntity with status code 204 (No Content) if deletion is successful, or 404 (Not Found) if product not found.
+     */
     @DeleteMapping("/deleteProduct/{productId}")
-    public void deleteProduct(@PathVariable long productId){
-        productService.deleteProduct(productId);
+    public ResponseEntity<Void> deleteProduct(@PathVariable long productId){
+        boolean deleted = productService.deleteProduct(productId);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
