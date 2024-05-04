@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,8 +43,14 @@ public class PtoductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(long productId) {
-        productRepository.deleteById(productId);
+    public boolean deleteProduct(long productId) {
+        try {
+            productRepository.deleteById(productId);
+            return true; // Return true if deletion is successful
+        } catch (Exception e) {
+            // Log the exception or handle it gracefully
+            return false; // Return false if an error occurs during deletion
+        }
     }
 }
 
