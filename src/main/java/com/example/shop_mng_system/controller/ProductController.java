@@ -49,7 +49,7 @@ public class ProductController {
      * @return ResponseEntity containing a list of all products with status code 200 (OK).
      */
     @GetMapping("/getAllProducts")
-    public ResponseEntity<List<Product>> products(){
+    public ResponseEntity<List<Product>> getAllProducts(){
         List<Product> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
