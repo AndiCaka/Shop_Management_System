@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @RestController
@@ -25,10 +26,24 @@ public class BillController {
      * @param date   The date for which the day balance is calculated.
      * @return ResponseEntity containing the day balance as a Double.
      */
-    @GetMapping("/users/{userId}/dayBalance")
+    @GetMapping("/user/{userId}/dayBalance")
     public ResponseEntity<Double> getUserDayBalance(@PathVariable Long userId,
                                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         Double dayBalance = billService.calculateDayBalanceForUser(userId, date);
+        return ResponseEntity.ok(dayBalance);
+    }
+
+    /**
+     * Get the day balance for a specific user on a given month.
+     *
+     * @param userId The ID of the user for whom the day balance is calculated.
+     * @param month   The date for which the day balance is calculated.
+     * @return ResponseEntity containing the day balance as a Double.
+     */
+    @GetMapping("/user/{userId}/monthBalance")
+    public ResponseEntity<Double> getUserMouthBalance(@PathVariable Long userId,
+                                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth month) {
+        Double dayBalance = billService.calculateMonthBalanceForUser(userId, month);
         return ResponseEntity.ok(dayBalance);
     }
 

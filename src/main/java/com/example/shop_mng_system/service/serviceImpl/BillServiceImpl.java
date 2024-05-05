@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Service
@@ -137,5 +138,19 @@ public class BillServiceImpl implements BillService {
             dayBalance += bill.getAmount();
         }
         return dayBalance;
+    }
+
+    @Override
+    public Double calculateMonthBalanceForUser(Long userId, YearMonth month) {
+
+        int year = month.getYear();
+        int monthValue = month.getMonthValue();
+        List<Bill> bills = billRepository.findByUserIdAndYearMonth(userId, year, monthValue);
+
+        Double monthBalance = 0.0;
+        for (Bill bill : bills) {
+            monthBalance += bill.getAmount();
+        }
+        return monthBalance;
     }
 }
