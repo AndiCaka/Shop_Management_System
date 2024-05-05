@@ -17,4 +17,6 @@ public interface BillService {
     boolean deleteBill(Long id);
 
     Double calculateDayBalanceForUser(Long userId, LocalDate date);
+
+    Double calculateDayBalance(LocalDate date);
 }

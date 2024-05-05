@@ -101,4 +101,14 @@ public class BillServiceImpl implements BillService {
         }
         return dayBalance;
     }
+
+    @Override
+    public Double calculateDayBalance(LocalDate date) {
+        List<Bill> bills = billRepository.findByDate(date);
+        Double dayBalance = 0.0;
+        for (Bill bill : bills) {
+            dayBalance += bill.getAmount();
+        }
+        return dayBalance;
+    }
 }

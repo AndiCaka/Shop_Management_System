@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
     List<Bill> findByUserIdAndDate(Long userId, LocalDate date);
+
+    List<Bill> findByDate(LocalDate date);
 }
