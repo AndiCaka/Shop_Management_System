@@ -22,4 +22,6 @@ public interface BillService {
     Double calculateDayBalance(LocalDate date);
 
     Double calculateMonthBalanceForUser(Long userId, YearMonth month);
+
+    Double calculateMonthBalance(YearMonth month);
 }

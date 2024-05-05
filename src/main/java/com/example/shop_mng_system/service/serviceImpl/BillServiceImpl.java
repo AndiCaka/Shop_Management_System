@@ -153,4 +153,17 @@ public class BillServiceImpl implements BillService {
         }
         return monthBalance;
     }
+
+    @Override
+    public Double calculateMonthBalance(YearMonth month) {
+        int year = month.getYear();
+        int monthValue = month.getMonthValue();
+        List<Bill> bills = billRepository.findByYearMonth(year, monthValue);
+
+        Double monthBalance = 0.0;
+        for (Bill bill : bills) {
+            monthBalance += bill.getAmount();
+        }
+        return monthBalance;
+    }
 }

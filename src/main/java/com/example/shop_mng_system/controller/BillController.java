@@ -60,6 +60,18 @@ public class BillController {
     }
 
     /**
+     * Get the day balance for all users on a given month.
+     *
+     * @param month   The date for which the day balance is calculated.
+     * @return ResponseEntity containing the day balance as a Double.
+     */
+    @GetMapping("/monthBalance")
+    public ResponseEntity<Double> getMonthBalance(@RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth month) {
+        Double dayBalance = billService.calculateMonthBalance(month);
+        return ResponseEntity.ok(dayBalance);
+    }
+
+    /**
      * Get a bill by its ID.
      *
      * @param id The ID of the bill to retrieve.

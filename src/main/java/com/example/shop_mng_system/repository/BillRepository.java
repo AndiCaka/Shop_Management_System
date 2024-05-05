@@ -19,4 +19,7 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     // Custom query to find bills by user ID and year/month
     @Query("SELECT b FROM Bill b WHERE b.user.id = :userId AND YEAR(b.date) = :year AND MONTH(b.date) = :month")
     List<Bill> findByUserIdAndYearMonth(@Param("userId") Long userId, @Param("year") int year, @Param("month") int month);
+
+    @Query("SELECT b FROM Bill b WHERE YEAR(b.date) = :year AND MONTH(b.date) = :month")
+    List<Bill> findByYearMonth(@Param("year") int year, @Param("month") int month);
 }
