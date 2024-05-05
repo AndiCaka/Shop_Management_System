@@ -5,6 +5,7 @@ import com.example.shop_mng_system.entity.Product;
 import com.example.shop_mng_system.entity.User;
 import com.example.shop_mng_system.exception.ResourceNotFoundException;
 import com.example.shop_mng_system.repository.BillRepository;
+import com.example.shop_mng_system.repository.ProductRepository;
 import com.example.shop_mng_system.repository.UserRepository;
 import com.example.shop_mng_system.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class BillServiceImpl implements BillService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public Bill getBill(Long id) {
@@ -41,8 +45,18 @@ public class BillServiceImpl implements BillService {
         // Set the user for the bill
         bill.setUser(user);
 
+        // Fetch product entities from the database using their IDs
+        List<Long> productIds = bill.getProductIds();
+        List<Product> products = productRepository.findAllById(productIds);
+
+        // Check if all product IDs were found in the database
+        if (products.size() != productIds.size()) {
+            // Not all product IDs were found, throw a ResourceNotFoundException
+            throw new ResourceNotFoundException("One or more products not found");
+        }
+
         // Calculate total amount from the list of products
-        Double totalAmount = calculateTotalAmount(bill.getProducts());
+        Double totalAmount = calculateTotalAmount(products);
         bill.setAmount(totalAmount);
 
         // Set the current date as the bill date
@@ -67,9 +81,22 @@ public class BillServiceImpl implements BillService {
             throw new ResourceNotFoundException("Bill not found with id: " + id);
         }
 
+        // Fetch product entities from the database using their IDs
+        List<Long> productIds = bill.getProductIds();
+        List<Product> products = productRepository.findAllById(productIds);
+
+        // Check if all product IDs were found in the database
+        if (products.size() != productIds.size()) {
+            // Not all product IDs were found, throw a ResourceNotFoundException
+            throw new ResourceNotFoundException("One or more products not found");
+        }
+
+        // Calculate total amount from the list of products
+        Double totalAmount = calculateTotalAmount(products);
+
         // Update bill properties
-        existingBill.setProducts(bill.getProducts());
-        existingBill.setAmount(bill.getAmount());
+        existingBill.setProductIds(productIds);
+        existingBill.setAmount(totalAmount);
         existingBill.setDate(bill.getDate());
 
         // Retrieve the user entity from the database using the provided user ID

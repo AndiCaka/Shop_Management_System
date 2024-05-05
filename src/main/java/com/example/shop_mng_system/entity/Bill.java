@@ -24,9 +24,14 @@ public class Bill {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bill_id")
-    private List<Product> products;
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "bill_id")
+//    private List<Product> products;
+
+
+    @ElementCollection
+    private List<Long> productIds; // List of product IDs
+
     private Double amount;
     private LocalDate date;
 
