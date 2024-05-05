@@ -33,7 +33,7 @@ public class BillController {
     }
 
     /**
-     * Get the day balance for a specific user on a given date.
+     * Get the day balance for all users on a given date.
      *
      * @param date   The date for which the day balance is calculated.
      * @return ResponseEntity containing the day balance as a Double.
