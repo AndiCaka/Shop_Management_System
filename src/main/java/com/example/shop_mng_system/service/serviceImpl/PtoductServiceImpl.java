@@ -72,5 +72,10 @@ public class PtoductServiceImpl implements ProductService {
         // Fetch all products associated with the given category
         return productRepository.findByCategoryId(categoryId);
     }
+
+    @Override
+    public List<Product> getAllProductsByNameContaining(String name) {
+        return productRepository.findByNameContaining(name);
+    }
 }
 
