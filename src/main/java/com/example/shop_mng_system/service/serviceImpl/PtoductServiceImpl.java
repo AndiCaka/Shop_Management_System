@@ -67,6 +67,10 @@ public class PtoductServiceImpl implements ProductService {
         }
     }
 
-
+    @Override
+    public List<Product> getAllProductsByCategory(Long categoryId) {
+        // Fetch all products associated with the given category
+        return productRepository.findByCategoryId(categoryId);
+    }
 }
 

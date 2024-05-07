@@ -87,5 +87,16 @@ public class ProductController {
         }
     }
 
-
+    /**
+     * Retrieve products associated with the specified category ID.
+     *
+     * @param categoryId The ID of the category for which products are to be retrieved.
+     * @return ResponseEntity with status code 200 (OK) and the list of products if retrieval is successful,
+     *         or 404 (Not Found) if the category is not found.
+     */
+    @GetMapping("/byCategory/{categoryId}")
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long categoryId) {
+        List<Product> products = productService.getAllProductsByCategory(categoryId);
+        return ResponseEntity.ok(products);
+    }
 }
