@@ -100,9 +100,19 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    /**
+     * Retrieves a list of products whose names contain the specified substring.
+     *
+     * @param name The substring to search for in product names.
+     * @return ResponseEntity with a list of products matching the search criteria and status code 200 (OK).
+     */
     @GetMapping("/byName/{name}")
     public ResponseEntity<List<Product>> getProductsByName(@PathVariable String name) {
+        // Call the service method to retrieve products by name containing the specified substring
         List<Product> products = productService.getAllProductsByNameContaining(name);
+
+        // Return the list of products in the response entity with a 200 OK status
         return ResponseEntity.ok(products);
     }
+
 }
