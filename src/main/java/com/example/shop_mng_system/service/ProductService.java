@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    Product addProduct(Product product);
+    Product addProduct(Product product, Long categoryId);
 
     Product getProduct(long productId);
 
@@ -15,4 +15,6 @@ public interface ProductService {
     Product updateProduct(Long productId, Product product);
 
     boolean deleteProduct(long productId);
+
+
 }

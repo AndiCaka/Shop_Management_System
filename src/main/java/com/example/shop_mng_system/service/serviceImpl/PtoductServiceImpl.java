@@ -1,6 +1,9 @@
 package com.example.shop_mng_system.service.serviceImpl;
 
+import com.example.shop_mng_system.entity.Category;
 import com.example.shop_mng_system.entity.Product;
+import com.example.shop_mng_system.exception.ResourceNotFoundException;
+import com.example.shop_mng_system.repository.CategoryRepository;
 import com.example.shop_mng_system.repository.ProductRepository;
 import com.example.shop_mng_system.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +19,20 @@ public class PtoductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @Override
-    public Product addProduct(Product product) {
-        productRepository.save(product);
-        return product;
+    public Product addProduct(Product product, Long categoryId) {
+        // Fetch the category from the database
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + categoryId));
+
+        // Set the category for the product
+        product.setCategory(category);
+
+        // Save the product to the database
+        return productRepository.save(product);
     }
 
     @Override
@@ -38,6 +51,7 @@ public class PtoductServiceImpl implements ProductService {
 
             existingProduct.setName(product.getName());
             existingProduct.setPrice(product.getPrice());
+            existingProduct.setCategory(product.getCategory());
 
             return productRepository.save(existingProduct);
     }
@@ -52,5 +66,7 @@ public class PtoductServiceImpl implements ProductService {
             return false; // Return false if an error occurs during deletion
         }
     }
+
+
 }
 

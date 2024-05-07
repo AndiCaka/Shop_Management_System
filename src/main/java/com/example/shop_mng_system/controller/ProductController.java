@@ -22,8 +22,8 @@ public class ProductController {
      * @return ResponseEntity containing the added product with status code 201 (Created).
      */
     @PostMapping("/addProduct")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product){
-        Product addedProduct = productService.addProduct(product);
+    public ResponseEntity<Product> addProduct(@RequestBody Product product, @RequestParam Long categoryId){
+        Product addedProduct = productService.addProduct(product, categoryId);
         return ResponseEntity.status(HttpStatus.CREATED).body(addedProduct);
     }
 
@@ -86,4 +86,6 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
     }
+
+
 }
