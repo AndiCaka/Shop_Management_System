@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
+
     List<Bill> findByUserIdAndDate(Long userId, LocalDate date);
 
     List<Bill> findByDate(LocalDate date);
@@ -19,6 +20,7 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     @Query("SELECT b FROM Bill b WHERE b.user.id = :userId AND YEAR(b.date) = :year AND MONTH(b.date) = :month")
     List<Bill> findByUserIdAndYearMonth(@Param("userId") Long userId, @Param("year") int year, @Param("month") int month);
 
+    // Custom query to find bills by user year/month
     @Query("SELECT b FROM Bill b WHERE YEAR(b.date) = :year AND MONTH(b.date) = :month")
     List<Bill> findByYearMonth(@Param("year") int year, @Param("month") int month);
 }

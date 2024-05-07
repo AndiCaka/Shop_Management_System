@@ -1,8 +1,6 @@
 package com.example.shop_mng_system.controller;
 
-import com.example.shop_mng_system.entity.Bill;
 import com.example.shop_mng_system.entity.Category;
-import com.example.shop_mng_system.entity.Product;
 import com.example.shop_mng_system.exception.ResourceNotFoundException;
 import com.example.shop_mng_system.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
