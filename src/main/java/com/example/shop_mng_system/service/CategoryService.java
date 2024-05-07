@@ -14,4 +14,6 @@ public interface CategoryService {
     Category updateCategory(Long id, Category category);
 
     boolean deleteCategory(Long id);
+
+    List<Category> getAllCategoriesByNameContaining(String name);
 }

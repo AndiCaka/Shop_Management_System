@@ -2,6 +2,7 @@ package com.example.shop_mng_system.controller;
 
 import com.example.shop_mng_system.entity.Bill;
 import com.example.shop_mng_system.entity.Category;
+import com.example.shop_mng_system.entity.Product;
 import com.example.shop_mng_system.exception.ResourceNotFoundException;
 import com.example.shop_mng_system.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,4 +94,20 @@ public class CategoryController {
             return ResponseEntity.notFound().build(); // Return 404 if category is not found
         }
     }
+
+    /**
+     * Retrieves a list of categories whose names contain the specified substring.
+     *
+     * @param name The substring to search for in category names.
+     * @return ResponseEntity with a list of categories matching the search criteria and status code 200 (OK).
+     */
+    @GetMapping("/byName/{name}")
+    public ResponseEntity<List<Category>> getCategoriesByName(@PathVariable String name) {
+        // Call the service method to retrieve categories by name containing the specified substring
+        List<Category> categories = categoryService.getAllCategoriesByNameContaining(name);
+
+        // Return the list of categories in the response entity with a 200 OK status
+        return ResponseEntity.ok(categories);
+    }
+
 }
